@@ -21,10 +21,10 @@ void initialize_scene( Viewer& viewer )
     auto frame = std::make_shared<FrameRenderable>(flatShader);
     viewer.addRenderable(frame);
 
-    std::string fish_mesh_path = "../../sfmlGraphicsPipeline/meshes/fish.obj";
-    std::string fish_texture_path = "../../sfmlGraphicsPipeline/textures/fish_texture.png";
-    auto fish = std::make_shared<TexturedMeshRenderable>(nonRigidShader, fish_mesh_path, fish_texture_path);
-    viewer.addRenderable(fish);
+    std::string seal_mesh_path = "../../sfmlGraphicsPipeline/meshes/seal.obj";
+    std::string seal_texture_path = "../../sfmlGraphicsPipeline/textures/seal_txture.png";
+    auto seal = std::make_shared<TexturedMeshRenderable>(nonRigidShader, seal_mesh_path, seal_texture_path);
+    viewer.addRenderable(seal);
 }
 
 int main() 
