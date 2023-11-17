@@ -10,6 +10,8 @@ class TexturedPlaneRenderable : public TexturedMeshRenderable
 public :
     ~TexturedPlaneRenderable();
     TexturedPlaneRenderable(ShaderProgramPtr shaderProgram, const std::string & filename);
+    void setTexture(const std::string& filename);
+
 };
 
 typedef std::shared_ptr<TexturedPlaneRenderable> TexturedPlaneRenderablePtr;

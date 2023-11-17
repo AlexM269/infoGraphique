@@ -294,73 +294,73 @@ void getUnitCylinder(vector<glm::vec3> &positions, vector<glm::vec3> &normals, s
     tcoords.resize(number_of_vertices, glm::vec2(0));
 
     float previous_angle = (slices - 1) * angle_step;
+  
     float angle = 0;
-    float previous_sin = std::sin(previous_angle); 
-    float previous_cos = std::cos(previous_angle); 
-    float sin = std::sin(angle); 
-    float cos = std::cos(angle); 
+    float previous_sin= std::sin(previous_angle);
+    float previous_cos= std::cos(previous_angle);
+    float sin= 0;
+    float cos= 1;
 
-
-    for( size_t i = 0; i < slices; ++ i)
+    for( size_t i = 0; i < slices; 
+        ++i,
+        previous_sin=sin, previous_cos=cos,
+        angle= i * angle_step, sin = std::sin(angle), cos = std::cos(angle))
     {
         size_t voffset = 12 * i; // 4 x 3 = 12 vertices per slice
 
         // Positions
-        angle = angle + angle_step;
-        previous_sin = sin;
-        previous_cos = cos;
-        sin = std::sin(angle);
-        cos = std::cos(angle);
 
         // top triangle
         positions[ voffset +  0 ] = glm::vec3(0,0,1);
-        positions[ voffset +  1 ] = glm::vec3(cos,sin,1);
-        positions[ voffset +  2 ] = glm::vec3(previous_cos,previous_sin,1);
+        positions[ voffset +  1 ] = glm::vec3(previous_sin, previous_cos,1);
+        positions[ voffset +  2 ] = glm::vec3(sin, cos,1);
 
         // side triangles
-        positions[ voffset +  3 ] = glm::vec3(previous_cos,previous_sin,1);
-        positions[ voffset +  4 ] = glm::vec3(cos,sin,1);
-        positions[ voffset +  5 ] = glm::vec3(previous_cos,previous_sin,0);
-        positions[ voffset +  6 ] = glm::vec3(cos,sin,1);
-        positions[ voffset +  7 ] = glm::vec3(cos,sin,0);
-        positions[ voffset +  8 ] = glm::vec3(previous_cos,previous_sin,0);
+        positions[ voffset +  3 ] = glm::vec3(sin, cos, 1);
+        positions[ voffset +  4 ] = glm::vec3(sin, cos, 0);
+        positions[ voffset +  5 ] = glm::vec3(previous_sin, previous_cos,1);
+        positions[ voffset +  6 ] = glm::vec3(previous_sin, previous_cos, 1);
+        positions[ voffset +  7 ] = glm::vec3(previous_sin, previous_cos, 0);
+        positions[ voffset +  8 ] = glm::vec3(sin, cos, 0);
 
         // bottom triangle
-        positions[ voffset +  9 ] = glm::vec3(cos,sin,0);
-        positions[ voffset + 10 ] = glm::vec3(previous_cos,previous_sin,0);
-        positions[ voffset + 11 ] = glm::vec3(0,0,0);
-
-        
+        positions[ voffset +  9 ] = glm::vec3(0,0,0);
+        positions[ voffset + 10 ] = glm::vec3(previous_sin, previous_cos,0);
+        positions[ voffset + 11 ] = glm::vec3(sin, cos,0);
 
         // Normals
 
         // top triangle
-        // normals[ voffset +  0 ] = ???
-        // normals[ voffset +  1 ] = ???
-        // normals[ voffset +  2 ] = ???
+        normals[ voffset +  0 ] = glm::vec3(0, 0, 1);
+        normals[ voffset +  1 ] = glm::vec3(0, 0, 1);
+        normals[ voffset +  2 ] = glm::vec3(0, 0, 1);
         
         // side triangles
         if (vertex_normals){
             // Per vertex normals
-            // normals[ voffset +  3 ] = ???
-            // normals[ voffset +  4 ] = ???
-            // normals[ voffset +  5 ] = ???
-            // normals[ voffset +  6 ] = ???
-            // normals[ voffset +  7 ] = ???
-            // normals[ voffset +  8 ] = ???
+            normals[ voffset +  3 ] = glm::vec3(sin, cos, 0);
+            normals[ voffset +  4 ] = glm::vec3(sin, cos, 0);
+            normals[ voffset +  5 ] = glm::vec3(previous_sin, previous_cos,0);
+            normals[ voffset +  6 ] = glm::vec3(previous_sin, previous_cos,0);
+            normals[ voffset +  7 ] = glm::vec3(previous_sin, previous_cos,0);
+            normals[ voffset +  8 ] = glm::vec3(sin, cos, 0);
         }else{
-            // Per triangle normals
-            // normals[ voffset +  3 ] = ???
-            // normals[ voffset +  4 ] = ???
-            // normals[ voffset +  5 ] = ???
-            // normals[ voffset +  6 ] = ???
-            // normals[ voffset +  7 ] = ???
-            // normals[ voffset +  8 ] = ???
+            //Per triangle normals
+            float intermediate_angle = angle - 0.5 * angle_step;
+            float intermediate_sin = std::sin(intermediate_angle);
+            float intermediate_cos = std::cos(intermediate_angle);
+            glm::vec3 side_normal = glm::vec3(intermediate_sin, intermediate_cos, 1);
+            normals[ voffset +  3 ] = side_normal;
+            normals[ voffset +  4 ] = side_normal;
+            normals[ voffset +  5 ] = side_normal;
+            normals[ voffset +  6 ] = side_normal;
+            normals[ voffset +  7 ] = side_normal;
+            normals[ voffset +  8 ] = side_normal;
         }
 
-        // normals[ voffset +  9 ] = ???
-        // normals[ voffset + 10 ] = ???
-        // normals[ voffset + 11 ] = ???
+        normals[ voffset +  9 ] = glm::vec3(0, 0, -1);
+        normals[ voffset + 10 ] = glm::vec3(0, 0, -1);
+        normals[ voffset + 11 ] = glm::vec3(0, 0, -1);
 
         // Texture coordinates (don't modify, might be used later)
         
@@ -768,6 +768,96 @@ void getUnitIndexedTorus(vector<glm::vec3>& positions, vector<glm::vec3>& normal
             unsigned int d =  strips * next_j + next_i;
             indices.push_back(glm::uvec3(a, b, d));
             indices.push_back(glm::uvec3(b, c, d));
+        }
+    }
+}
+
+void getFabric(float width, float height, int horizontal_resolution, int vertical_resolution,
+    std::vector<ParticlePtr> & particles,
+    std::vector<SpringForceFieldPtr> & springs,
+    std::vector<glm::vec3> & positions,
+    std::vector<glm::uvec3> & indices,
+    std::vector<glm::vec2> & tcoords,
+    float stiffness,
+    float damping)
+{
+    particles.resize(0);
+    springs.resize(0);
+    positions.resize(0);
+    tcoords.resize(0);
+    indices.resize(0);
+    float mass = 1.0f; // does not matter much
+    float radius = 0.01; // does not matter at all
+
+    // Make particles and vertices
+    for (size_t i = 0 ; i < horizontal_resolution ; ++i){
+        for (size_t j = 0 ; j < vertical_resolution ; ++j){
+            glm::vec2 uv = glm::vec2((float)i/(horizontal_resolution-1), (float)j/(vertical_resolution-1));
+            tcoords.push_back(uv);
+            glm::vec3 pos = glm::vec3(uv.x * width, uv.y * height, 0.0);
+            positions.push_back(pos);
+            ParticlePtr particle = std::make_shared<Particle>(pos, glm::vec3(0), mass, radius);
+            particles.push_back(particle);
+        }
+    }
+    // Make springs and triangles
+    for (int i = 0 ; i < horizontal_resolution ; ++i){
+        for (int j = 0 ; j < vertical_resolution ; ++j){
+    
+            int index = i * vertical_resolution + j;
+            int index_right = (i+1) * vertical_resolution + j;
+            int index_left = (i-1) * vertical_resolution + j;
+            int index_up = i * vertical_resolution + j - 1;
+            int index_bottom = i * vertical_resolution + j + 1;
+            int index_right_up = (i+1) * vertical_resolution + j - 1;
+            int index_left_up = (i-1) * vertical_resolution + j - 1;
+            int index_right_bottom = (i+1) * vertical_resolution + j + 1;
+            int index_left_bottom = (i-1) * vertical_resolution + j + 1;
+            bool left_border = i == 0;
+            bool right_border = i == horizontal_resolution - 1;
+            bool top_border = j == 0;
+            bool bottom_border = j == vertical_resolution - 1;
+
+            // Springs
+            // connect each particle to 4 neighbors such that each particle is connected to its 8 neighbors in the end
+            ParticlePtr particle = particles[index];
+            // connection with top right particle
+            
+            if (!top_border && ! right_border){
+                ParticlePtr top_right_particle = particles[index_right_up];
+                float distance = glm::distance(particle->getPosition(), top_right_particle->getPosition());
+                SpringForceFieldPtr spring = std::make_shared<SpringForceField>(particle, top_right_particle, stiffness, distance, damping);
+                springs.push_back(spring);
+            }
+            // connection with right particle
+            if (!right_border){
+                ParticlePtr right_particle = particles[index_right];
+                float distance = glm::distance(particle->getPosition(), right_particle->getPosition());
+                SpringForceFieldPtr spring = std::make_shared<SpringForceField>(particle, right_particle, stiffness, distance, damping);
+                springs.push_back(spring);
+            }
+            // connection with bottom right particle
+            if (!bottom_border && !right_border){
+                ParticlePtr bottom_right_particle = particles[index_right_bottom];
+                float distance = glm::distance(particle->getPosition(), bottom_right_particle->getPosition());
+                SpringForceFieldPtr spring = std::make_shared<SpringForceField>(particle, bottom_right_particle, stiffness, distance, damping);
+                springs.push_back(spring);
+            }
+            // connection with bottom particle
+            if (!bottom_border){
+                ParticlePtr bottom_particle = particles[index_bottom];
+                float distance = glm::distance(particle->getPosition(), bottom_particle->getPosition());
+                SpringForceFieldPtr spring = std::make_shared<SpringForceField>(particle, bottom_particle, stiffness, distance, damping);
+                springs.push_back(spring);
+            }
+            
+            // Triangles
+            // Just make a triangle mesh out of the plane vertices
+            if (bottom_border || right_border)
+                continue;
+
+            indices.push_back(glm::uvec3(index, index_right_bottom, index_bottom));
+            indices.push_back(glm::uvec3(index, index_right, index_right_bottom));
         }
     }
 }

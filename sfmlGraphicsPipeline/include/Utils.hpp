@@ -16,6 +16,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <Camera.hpp>
+#include <dynamics/Particle.hpp>
+#include <dynamics/SpringForceField.hpp>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -84,6 +86,15 @@ glm::mat4 getRotationMatrix(float angle, float x, float y, float z);
 glm::mat4 lookAtModel(const glm::vec3 & position, const glm::vec3 & target, const glm::vec3 & forward);
 glm::mat4 lookAtUp(const glm::vec3 & position, const glm::vec3 & target);
 glm::mat4 lookAtUpModel(const glm::vec3 & position, const glm::vec3 & target);
+
+void getFabric(float width, float height, int horizontal_resolution, int vertical_resolution,
+    std::vector<ParticlePtr> & particles,
+    std::vector<SpringForceFieldPtr> & springs,
+    std::vector<glm::vec3> & positions,
+    std::vector<glm::uvec3> & indices,
+    std::vector<glm::vec2> & tcoords,
+    float stiffness,
+    float spring_damping);
 
 template<typename T>
 void unpack(const std::vector<glm::tvec4<T>> & packed, std::vector<T> & unpacked){

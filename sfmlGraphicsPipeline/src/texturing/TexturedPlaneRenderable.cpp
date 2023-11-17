@@ -26,3 +26,13 @@ TexturedPlaneRenderable::TexturedPlaneRenderable(ShaderProgramPtr shaderProgram,
     // Update the all buffers
     update_all_buffers();
 }
+
+// Fonction pour modifier la texture du plan
+void TexturedPlaneRenderable::setTexture(const std::string& filename) {
+        // Load texture
+        m_image.loadFromFile(filename);
+        m_image.flipVertically(); // sfml inverts the v axis... put the image in OpenGL convention: lower left corner is (0,0)
+
+        // Update textures buffer
+        update_texture_buffer();
+}

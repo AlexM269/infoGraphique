@@ -77,12 +77,17 @@ private:
      */
     float m_restitution;
 
+    float m_elapsedTimeSinceWindUpdate;
+
 public:
     ~DynamicSystem();
     DynamicSystem();
 
     static glm::vec3 gravity; 
+    static glm::vec3 wind; 
+    static glm::vec3 courant; 
 
+    void updateWind(float animationTime);
     /**@brief Add a particle to the system.
      *
      * Add a particle to this dynamic system.

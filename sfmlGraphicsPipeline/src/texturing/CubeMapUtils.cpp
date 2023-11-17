@@ -8,7 +8,7 @@ cmutils::Cubemap cmutils::load_cubemap(const std::string & cubemap_dir)
     cmutils::Cubemap cubemap;
     for (std::size_t i=0u;i<cubemap.size();++i)
     {
-        std::string filename = cubemap_dir + "/" + cmutils::face_names[i] + ".jpg";
+        std::string filename = cubemap_dir + "/" + cmutils::face_names[i] + ".png";
         LOG(info, "[CubeMapUtils] Loading "<< filename);
         cubemap[i].loadFromFile(filename);
     }
@@ -19,7 +19,7 @@ void cmutils::load_cubemap(const std::string & cubemap_dir, cmutils::Cubemap & c
 {
     for (std::size_t i=0u;i<cubemap.size();++i)
     {
-        std::string filename = cubemap_dir + "/" + cmutils::face_names[i] + ".jpg";
+        std::string filename = cubemap_dir + "/" + cmutils::face_names[i] + ".png";
         LOG(info, "[CubeMapUtils] Loading "<< filename);
         cubemap[i].loadFromFile(filename);
     }
@@ -29,7 +29,7 @@ void cmutils::save_cubemap(const cmutils::Cubemap & cubemap, const std::string &
 {
     for (std::size_t i=0u;i<cubemap.size();++i)
     {
-        std::string filename = cubemap_dir + "/" + cmutils::face_names[i] + ".jpg";
+        std::string filename = cubemap_dir + "/" + cmutils::face_names[i] + ".png";
         LOG(info, "[CubeMapUtils] Writing "<< filename);
         cubemap[i].saveToFile(filename);
     }
@@ -230,9 +230,9 @@ cmutils::Cubemap cmutils::blur_cubemap(const cmutils::Cubemap & cubemap, unsigne
     unsigned int tBuffer = send_quad();
     unsigned int cTid = send_cubemap(cubemap);
     cmutils::cubemap_to_panorama_draw(cubemap, panorama_rt, tBuffer, cTid);
-    // panorama_rt.getTexture().copyToImage().saveToFile("panorama_rt.jpg");
+    // panorama_rt.getTexture().copyToImage().saveToFile("panorama_rt.png");
     cmutils::blur_panorama_draw(panorama_rt, tBuffer, csize, ksize);
-    // panorama_rt.getTexture().copyToImage().saveToFile("panorama_rt_blurred.jpg");
+    // panorama_rt.getTexture().copyToImage().saveToFile("panorama_rt_blurred.png");
     cmutils::Cubemap blurred_cubemap; 
     cmutils::panorama_to_cubemap_draw(panorama_rt, blurred_cubemap, csize, tBuffer);
     

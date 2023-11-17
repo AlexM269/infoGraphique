@@ -4,19 +4,51 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/norm.hpp>
 
+#include <random>
+
 #include "./../../include/gl_helper.hpp"
 #include "./../../include/dynamics/DynamicSystem.hpp"
 #include "./../../include/dynamics/ParticlePlaneCollision.hpp"
 #include "./../../include/dynamics/ParticleParticleCollision.hpp"
+#include "./../../include/dynamics/ConstantForceField.hpp"
+
 
 
 DynamicSystem::DynamicSystem() :
     m_dt(0.1),
     m_restitution(1.0),
-    m_handleCollisions(true)
+    m_handleCollisions(true),
+    m_elapsedTimeSinceWindUpdate(0.0) // Initialisez la variable à zéro
 {}
 
-glm::vec3 DynamicSystem::gravity = glm::vec3(0.0, -9.81, 0.0);
+glm::vec3 DynamicSystem::gravity = glm::vec3(0, -9.81, 0);
+glm::vec3 DynamicSystem::wind = glm::vec3(-40,-9.81,-70);
+glm::vec3 DynamicSystem::courant = glm::vec3(-5,0,-5);
+
+void DynamicSystem::updateWind(float animationTime)
+{
+    m_elapsedTimeSinceWindUpdate += animationTime;
+
+    // Si 5 secondes se sont écoulées, mettre à jour le vent et réinitialiser la minuterie
+    if (m_elapsedTimeSinceWindUpdate >= 5.0)
+    {
+        // Générez des valeurs aléatoires selon une distribution normale pour chaque composant du vent.
+        int randomXInt = rand();
+        int randomZInt = rand();
+
+        // Normalisez les valeurs à la plage [0, 20].
+        float randomX = static_cast<float>(randomXInt % 21);
+        float randomZ = static_cast<float>(randomZInt % 21);
+        // Mise à jour du vecteur wind avec les valeurs aléatoires.
+        wind = glm::vec3(randomX,0, randomZ);
+
+        // Réinitialisez la minuterie
+        m_elapsedTimeSinceWindUpdate = 0.0;
+        ConstantForceFieldPtr windForceField = std::make_shared<ConstantForceField>(this->getParticles(), DynamicSystem::wind);
+        this->addForceField(windForceField);
+
+    }
+}
 
 
 const std::vector<ParticlePtr>& DynamicSystem::getParticles() const

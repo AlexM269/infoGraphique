@@ -38,6 +38,9 @@ class TexturedMeshRenderable : public MeshRenderable
     void update_texture_buffer();
     void update_tcoords_buffer();
     void update_all_buffers();
+    void updateTextureOption(int i);
+
+    void setTexture(const std::string& filename);
     
     protected:
         TexturedMeshRenderable(ShaderProgramPtr shaderProgram, bool indexed);
@@ -51,7 +54,6 @@ class TexturedMeshRenderable : public MeshRenderable
 
     private:
         void do_keyPressedEvent( sf::Event& e );
-        void updateTextureOption();
         void gen_buffers();
         void update_buffers();
 

@@ -84,6 +84,20 @@ TexturedMeshRenderable::TexturedMeshRenderable(ShaderProgramPtr prog, bool index
     gen_buffers();
 }
 
+// Fonction pour modifier la texture du plan
+void TexturedMeshRenderable::setTexture(const std::string& filename) {
+    
+    m_image.loadFromFile(filename);
+    if (m_tcoords.size() != m_positions.size()){
+        m_tcoords.resize(m_positions.size(), glm::vec2(0.0));
+    }
+    m_original_tcoords = m_tcoords; // m_tcoords is already loaded from MeshRenderable ctor
+    m_image.flipVertically();
+    gen_buffers();
+    update_buffers();
+
+}
+
 void TexturedMeshRenderable::gen_buffers()
 {
     glcheck(glGenBuffers(1, &m_tBuffer)); //texture coordinates
@@ -105,12 +119,12 @@ void TexturedMeshRenderable::update_texture_buffer(){
     glcheck(glBindTexture(GL_TEXTURE_2D, m_texId));
     glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
     glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT)); // Mode de répétition horizontal
+    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT)); // Mode de répétition vertical
     // send the texture
     glcheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_image.getSize().x, m_image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, (const GLvoid*)m_image.getPixelsPtr()));
 
-    //Release the texture
+    // Release the texture
     glcheck(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
@@ -166,10 +180,11 @@ const sf::Image & TexturedMeshRenderable::image() const
     return m_image;
 }
 
-void TexturedMeshRenderable::updateTextureOption()
+void TexturedMeshRenderable::updateTextureOption(int i)
 {
     //Resize texture coordinates factor
     float factor=10.0;
+    m_wrap_option=i;
 
     //Bind the texture
     glBindTexture(GL_TEXTURE_2D, m_texId);
@@ -240,7 +255,7 @@ void TexturedMeshRenderable::updateTextureOption()
 
 void TexturedMeshRenderable::do_keyPressedEvent( sf::Event& e )
 {
-    if(e.key.code == sf::Keyboard::F6){
+  /* if(e.key.code == sf::Keyboard::F6){
         m_wrap_option = ++m_wrap_option % 5;
         LOG(info, "Texture wrapping set to : "<<wrap_option_names[m_wrap_option]);
     }
@@ -250,5 +265,5 @@ void TexturedMeshRenderable::do_keyPressedEvent( sf::Event& e )
         LOG(info, "Texture filtering set to : "<<filter_option_names[m_filter_option]);
     }
 
-    updateTextureOption();
+    updateTextureOption(2); */
 }

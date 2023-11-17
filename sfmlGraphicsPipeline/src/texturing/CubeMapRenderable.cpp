@@ -28,7 +28,7 @@ CubeMapRenderable::CubeMapRenderable(
     cmutils::load_cubemap(dirname, m_cubemap);
 
     // Low priority render this last !
-    m_priority = -100;
+    m_priority = 1000;
 
     // Generate and send buffers
     glGenTextures(1, &m_texId);

@@ -134,6 +134,16 @@ public:
      * @return A bronze material.
      */
     static MaterialPtr Bronze();
+    /**
+     * @brief Construct a snow material from real data then adjusted
+     * @return A snow material.
+     */
+    static MaterialPtr Snow();
+    /**
+     * @brief Construct a gold material from real data according to http://devernay.free.fr/cours/opengl/materials.html
+     * @return A gold material.
+     */
+    static MaterialPtr Gold();
 
 private:
     glm::vec3 m_ambient; /*!< The ambient material vector defines what color this object reflects under ambient lighting. */
