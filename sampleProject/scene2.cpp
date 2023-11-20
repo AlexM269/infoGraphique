@@ -1,25 +1,16 @@
 #include <Viewer.hpp>
 #include <ShaderProgram.hpp>
 
-
 #include <texturing/TexturedPlaneRenderable.hpp>
-#include <texturing/TexturedCubeRenderable.hpp>
 #include <texturing/TexturedMeshRenderable.hpp>
-#include <texturing/MultiTexturedCubeRenderable.hpp>
-#include <texturing/MipMapCubeRenderable.hpp>
-#include <texturing/BillBoardPlaneRenderable.hpp>
-#include <lighting/DirectionalLightRenderable.hpp>
-#include <texturing/TexturedTriangleRenderable.hpp>
 #include <texturing/CubeMapRenderable.hpp>
-#include <FrameRenderable.hpp>
+
 #include <lighting/DirectionalLightRenderable.hpp>
 #include <lighting/LightedMeshRenderable.hpp>
-
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Clock.hpp>
 #include <dirent.h>
-
 
 #include <FrameRenderable.hpp>
 
@@ -35,20 +26,13 @@
 #include <dynamics/ControlledForceFieldRenderable.hpp>
 
 #include <random>
-
-
-#include <iostream>
 #include <string>
+
+//PLONGEON//
 
 
 void initialize_scene( Viewer& viewer )
 {
-   //Position the camera
-  
-
-   //Add a 3D frame to the viewer
-   //FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
-   //viewer.addRenderable(frame);
    // Lumière directionnelle du jour pour l'ensemble de la scène
    ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(  "../../sfmlGraphicsPipeline/shaders/flatVertex.glsl",
                                                                        "../../sfmlGraphicsPipeline/shaders/flatFragment.glsl");
@@ -62,20 +46,10 @@ void initialize_scene( Viewer& viewer )
    viewer.addDirectionalLight(directionalLight);
    viewer.addRenderable(directionalLightRenderable);
 
-
-   { // Exercice 6 : cubemap
-
-
-       // Caméra positionnée à une hauteur de 10 (1er paramètre) et fixant une target à hauteur 10 également (2ème paramètre)
+   {
+       // Caméra positionnée à certaine position (1er paramètre) et fixant une target (2ème paramètre)
        viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(15, 2, 8 ), glm::vec3(3,0.65,10), glm::vec3( 0, 1, 0 ) ) );
-
-        //Camera originale
-       //viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(100, 30, 50), glm::vec3(0, 10, 0), glm::vec3( 0, 1, 0 ) ) );
    }
-
-
-
-
 }
 
 
@@ -233,16 +207,13 @@ void initialize_seal(Viewer& viewer){ // Creation des phoques de départ
     seal_final->addLocalTransformKeyframe(GeometricTransformation(glm::vec3(0,-1.35,6),
     glm::angleAxis(float(M_PI/2),glm::vec3(1,0,0)), glm::vec3(1,1,1)),12);     
 
-    //seal_final->addGlobalTransformKeyframe(GeometricTransformation(glm::vec3(8.5,0.35,10),glm::quat{},glm::vec3(2,2,2)),4.0);
-
-    //seal_final->addLocalTransformKeyframe(GeometricTransformation(glm::vec3(0,4,0),glm::angleAxis(float(M_PI/2), glm::vec3(1,0,0)), glm::vec3(1,1,1)),2.0);
-
     viewer.addRenderable(seal_final);
     viewer.startAnimation();
 }
 
 
 std::vector<std::string> listFilesInDirectory(const std::string& directoryPath) {
+     //Fonction de gestion de répertoire pour l'animation des textures
    std::vector<std::string> textureFiles;
    DIR* dir;
    struct dirent* ent;
@@ -266,12 +237,6 @@ void createSplash(Viewer& viewer, DynamicSystemPtr& system, DynamicSystemRendera
      ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(  "../../sfmlGraphicsPipeline/shaders/flatVertex_splash.glsl",
                                                                     "../../sfmlGraphicsPipeline/shaders/flatFragment_splash.glsl");
      viewer.addShaderProgram( flatShader );
-
-     //We diminish the time step to be able to see what happens before particles go too far
-     //system->setDt(5e-3);
-
-     //Deactivate /activate collision detection
-      //system->setCollisionsDetection(false);
 
         //génération de nb aléatoires
         std::random_device rd;
@@ -380,7 +345,7 @@ int main()
    TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, textureFiles[0]);
 
    texPlane->setGlobalTransform(getRotationMatrix(M_PI/2,1,0,0)*getScaleMatrix(500));
-   texPlane->updateTextureOption(2);
+   texPlane->updateTextureOption(2); //Utilise l'option de texture MIRROR_REPEAT
    viewer.addRenderable(texPlane);
 
    sf::Clock clock; // Minuterie pour le changement de texture
@@ -408,7 +373,6 @@ int main()
     viewer.addRenderable(systemRenderable);
 
     animate_camera(viewer);
-
    
     bool splash_fait = false;
 

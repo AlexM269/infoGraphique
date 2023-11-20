@@ -1,4 +1,3 @@
-
 #include <Viewer.hpp>
 #include <ShaderProgram.hpp>
 

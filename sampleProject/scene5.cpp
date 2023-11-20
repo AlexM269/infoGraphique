@@ -6,18 +6,15 @@
 #include <dynamics/DynamicSystemRenderable.hpp>
 #include <dynamics/DampingForceField.hpp>
 #include <dynamics/ConstantForceField.hpp>
-#include <dynamics/SpringForceField.hpp>
 #include <dynamics/EulerExplicitSolver.hpp>
 
 #include <texturing/FlagRenderable.hpp>
 #include <texturing/TexturedPlaneRenderable.hpp>
-
 #include <texturing/TexturedMeshRenderable.hpp>
 #include <texturing/CubeMapRenderable.hpp>
+
 #include <lighting/DirectionalLightRenderable.hpp>
 #include <lighting/LightedMeshRenderable.hpp>
-
-
 
 #include <SFML/System/Clock.hpp>
 #include <dirent.h>
@@ -135,7 +132,6 @@ void movingShip( Viewer& viewer )
     auto ship = std::make_shared<TexturedMeshRenderable>(texShader, ship_mesh_path, ship_texture_path);
 
 	//Animated ship
-
     ship->setGlobalTransform(getTranslationMatrix(100,0,-100.0)*getScaleMatrix(5)*getRotationMatrix(M_PI,0,1,0));
     ship->addLocalTransformKeyframe(GeometricTransformation(glm::vec3(0,0,0),glm::quat{},glm::vec3(1,1,1)),0.0);
     ship->addLocalTransformKeyframe(GeometricTransformation(glm::vec3(0,0,0),glm::quat{},glm::vec3(1,1,1)),10.0);

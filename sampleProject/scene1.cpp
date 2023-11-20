@@ -1,44 +1,30 @@
 #include <Viewer.hpp>
 #include <ShaderProgram.hpp>
 
-
 #include <texturing/TexturedPlaneRenderable.hpp>
-#include <texturing/TexturedCubeRenderable.hpp>
 #include <texturing/TexturedMeshRenderable.hpp>
-#include <texturing/MultiTexturedCubeRenderable.hpp>
-#include <texturing/MipMapCubeRenderable.hpp>
-#include <texturing/BillBoardPlaneRenderable.hpp>
-#include <lighting/DirectionalLightRenderable.hpp>
-#include <texturing/TexturedTriangleRenderable.hpp>
 #include <texturing/CubeMapRenderable.hpp>
-#include <FrameRenderable.hpp>
+
 #include <lighting/DirectionalLightRenderable.hpp>
 #include <lighting/LightedMeshRenderable.hpp>
-
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Clock.hpp>
 #include <dirent.h>
-
-
-#include <iostream>
 #include <string>
 
-// SCENE DU REVEIL
+
+// SCENE DU REVEIL //
 
 
 void initialize_scene( Viewer& viewer )
 {
-   //Position the camera
-  
-
-   //Add a 3D frame to the viewer
-   //FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
-   //viewer.addRenderable(frame);
-   // Lumière directionnelle du jour pour l'ensemble de la scène
+    //Ajout du shader de base
    ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(  "../../sfmlGraphicsPipeline/shaders/flatVertex.glsl",
                                                                        "../../sfmlGraphicsPipeline/shaders/flatFragment.glsl");
    viewer.addShaderProgram( flatShader );
+
+   // Lumière directionnelle du jour pour l'ensemble de la scène
    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,-1.0,-1.0));
    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,1.0), d_specular(1.0,1.0,1.0);
    glm::vec3 lightPosition(0.0,300,0.0);
@@ -47,25 +33,12 @@ void initialize_scene( Viewer& viewer )
    directionalLight->setGlobalTransform(getTranslationMatrix(lightPosition) * directionalLight->getGlobalTransform());
    viewer.addDirectionalLight(directionalLight);
    viewer.addRenderable(directionalLightRenderable);
-
-
-   { 
-
-
-       // Caméra positionnée à une hauteur de 10 (1er paramètre) et fixant une target à hauteur 10 également (2ème paramètre)
-      
-        //Camera originale
-       //viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(100, 30, 50), glm::vec3(0, 10, 0), glm::vec3( 0, 1, 0 ) ) );
-   }
-
-
-
 }
 
 
 void createIce(Viewer& viewer){
     
-
+    //Ajout des shaders au viewer 
    ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(   "../../sfmlGraphicsPipeline/shaders/simpleTextureVertex.glsl",
                                                                    "../../sfmlGraphicsPipeline/shaders/simpleTextureFragment.glsl");
    viewer.addShaderProgram( texShader );
@@ -203,6 +176,7 @@ void initialize_seal(Viewer& viewer){ // Creation des phoques de départ
 
 
 std::vector<std::string> listFilesInDirectory(const std::string& directoryPath) {
+    //Fonction de gestion de répertoire pour l'animation des textures
    std::vector<std::string> textureFiles;
    DIR* dir;
    struct dirent* ent;
@@ -283,7 +257,7 @@ int main()
    TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, textureFiles[0]);
 
    texPlane->setGlobalTransform(getRotationMatrix(M_PI/2,1,0,0)*getScaleMatrix(500));
-   texPlane->updateTextureOption(2);
+   texPlane->updateTextureOption(2);//Utilise l'option de texture MIRROR_REPEAT
    viewer.addRenderable(texPlane);
 
 //ANIMATION PHOQUE//
@@ -323,8 +297,8 @@ int main()
 
    while( viewer.isRunning() )
    {
-       // Anime la texture du plan avec la mer
-       animateTexture(texPlane, textureFiles, clock, currentTextureIndex,0.1f);
+        // Anime la texture du plan avec la mer
+        animateTexture(texPlane, textureFiles, clock, currentTextureIndex,0.1f);
 
         viewer.handleEvent();
 

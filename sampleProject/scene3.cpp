@@ -14,9 +14,7 @@
 #include <lighting/PointLightRenderable.hpp>
 #include <SFML/System/Clock.hpp>
 
-
-
-
+//EPAVE//
 
 void createSardine(Viewer& viewer, const std::string sardine_path,glm::mat4 positionInit,glm::mat4 positionEnd);
 void createWater(Viewer& viewer);
@@ -56,14 +54,12 @@ void initialize_scene( Viewer& viewer,DynamicSystemPtr system )
     DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
     directionalLight->setGlobalTransform(getTranslationMatrix(lightPosition) * directionalLight->getGlobalTransform());
     viewer.addDirectionalLight(directionalLight);
-
-    //viewer.getCamera().setViewMatrix(glm::lookAt(glm::vec3(-5,18,0),glm::vec3(-40,18,5), glm::vec3(0, 1, 0)));
-
     
 }
 
 int main() 
 {
+    //Initialisation des objets de la scène + CubeMap
     DynamicSystemPtr system = std::make_shared<DynamicSystem>();
     glm::vec4 background_color(0.8,0.8,0.8,1);
 	Viewer viewer(1280,720, background_color);
