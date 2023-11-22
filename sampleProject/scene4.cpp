@@ -1,22 +1,15 @@
 #include <Viewer.hpp>
 #include <ShaderProgram.hpp>
 
-#include <texturing/TexturedPlaneRenderable.hpp>
-#include <texturing/TexturedCubeRenderable.hpp>
 #include <texturing/TexturedMeshRenderable.hpp>
-#include <texturing/MultiTexturedCubeRenderable.hpp>
-#include <texturing/MipMapCubeRenderable.hpp>
-#include <texturing/BillBoardPlaneRenderable.hpp>
-#include <lighting/DirectionalLightRenderable.hpp>
-#include <texturing/TexturedTriangleRenderable.hpp>
 #include <texturing/CubeMapRenderable.hpp>
-#include <FrameRenderable.hpp>
+
+#include <lighting/DirectionalLightRenderable.hpp>
 #include <lighting/SpotLightRenderable.hpp>
 #include <lighting/LightedMeshRenderable.hpp>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Clock.hpp>
-#include <dirent.h>
 
 #include <iostream>
 #include <string>
@@ -41,59 +34,59 @@ void initialize_scene( Viewer& viewer )
     viewer.addDirectionalLight(directionalLight);
     viewer.addRenderable(directionalLightRenderable);
 
-        glm::vec3 cible1 = glm::vec3(-36,4,39);
-        float s_innerCutOff=std::cos(glm::radians(7.0f)), s_outerCutOff=std::cos(glm::radians(16.0f));
-        auto spot_light = std::make_shared<SpotLight>(glm::vec3(-36,8,40), cible1, glm::vec3(6.0), glm::vec3(18.0), glm::vec3(5.0), 1, 0.4, 0.4, s_innerCutOff, s_outerCutOff);
+    glm::vec3 cible1 = glm::vec3(-36,4,39);
+    float s_innerCutOff=std::cos(glm::radians(7.0f)), s_outerCutOff=std::cos(glm::radians(16.0f));
+    auto spot_light = std::make_shared<SpotLight>(glm::vec3(-36,8,40), cible1, glm::vec3(6.0), glm::vec3(18.0), glm::vec3(5.0), 1, 0.4, 0.4, s_innerCutOff, s_outerCutOff);
 
-        spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1, Light::base_forward), 0);
-        spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-42,8,39), cible1+glm::vec3(-3.0,0.0,1.0), Light::base_forward), 1);
-        spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-46,8,39), cible1+glm::vec3(-8.0,0.0,0.0), Light::base_forward), 2);
-        spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-42,8,39), cible1+glm::vec3(-3.0,0.0,1.0), Light::base_forward), 3);
-        spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1, Light::base_forward), 4);
-        viewer.addSpotLight(spot_light);
+    spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1, Light::base_forward), 0);
+    spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-42,8,39), cible1+glm::vec3(-3.0,0.0,1.0), Light::base_forward), 1);
+    spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-46,8,39), cible1+glm::vec3(-8.0,0.0,0.0), Light::base_forward), 2);
+    spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-42,8,39), cible1+glm::vec3(-3.0,0.0,1.0), Light::base_forward), 3);
+    spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1, Light::base_forward), 4);
+    viewer.addSpotLight(spot_light);
 
-        glm::vec3 cible2 = glm::vec3(-44,4,42);
-        auto spot_light2 = std::make_shared<SpotLight>(glm::vec3(-44,8,42), cible2, glm::vec3(6.0), glm::vec3(18.0), glm::vec3(5.0), 1, 0.4, 0.4, s_innerCutOff, s_outerCutOff);
+    glm::vec3 cible2 = glm::vec3(-44,4,42);
+    auto spot_light2 = std::make_shared<SpotLight>(glm::vec3(-44,8,42), cible2, glm::vec3(6.0), glm::vec3(18.0), glm::vec3(5.0), 1, 0.4, 0.4, s_innerCutOff, s_outerCutOff);
 
-        spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2, Light::base_forward), 0);
-        spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-41,8,42), cible2+glm::vec3(3.0,0.0,0.0), Light::base_forward), 1);
-        spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-37,8,42), cible2+glm::vec3(7.0,0.0,-1.0), Light::base_forward), 2);
-        spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-41,8,42), cible2+glm::vec3(3.0,0.0,0.0), Light::base_forward), 3);
-        spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2, Light::base_forward), 4);
-        viewer.addSpotLight(spot_light2);
+    spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2, Light::base_forward), 0);
+    spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-41,8,42), cible2+glm::vec3(3.0,0.0,0.0), Light::base_forward), 1);
+    spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-37,8,42), cible2+glm::vec3(7.0,0.0,-1.0), Light::base_forward), 2);
+    spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-41,8,42), cible2+glm::vec3(3.0,0.0,0.0), Light::base_forward), 3);
+    spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2, Light::base_forward), 4);
+    viewer.addSpotLight(spot_light2);
 
-        float mini_s_innerCutOff=std::cos(glm::radians(4.0f)), mini_s_outerCutOff=std::cos(glm::radians(9.0f));
-        auto mini_spot_light = std::make_shared<SpotLight>(glm::vec3(-36,8,39), cible1, glm::vec3(1.0), glm::vec3(16.0), glm::vec3(6.0), 1, 0.4, 0.4, mini_s_innerCutOff, mini_s_outerCutOff);
+    float mini_s_innerCutOff=std::cos(glm::radians(4.0f)), mini_s_outerCutOff=std::cos(glm::radians(9.0f));
+    auto mini_spot_light = std::make_shared<SpotLight>(glm::vec3(-36,8,39), cible1, glm::vec3(1.0), glm::vec3(16.0), glm::vec3(6.0), 1, 0.4, 0.4, mini_s_innerCutOff, mini_s_outerCutOff);
 
-        mini_spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1+glm::vec3(-2.0,0.0,0.0), Light::base_forward), 0);
-        mini_spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1+glm::vec3(0.0,0.0,0.0), Light::base_forward), 1);
-        mini_spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1+glm::vec3(0.0,0.0,3.0), Light::base_forward), 2);
-        mini_spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1+glm::vec3(-2.0,0.0,3.0), Light::base_forward), 3);
-        mini_spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1+glm::vec3(-2.0,0.0,0.0), Light::base_forward), 4);
-       viewer.addSpotLight(mini_spot_light);
+    mini_spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1+glm::vec3(-2.0,0.0,0.0), Light::base_forward), 0);
+    mini_spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1+glm::vec3(0.0,0.0,0.0), Light::base_forward), 1);
+    mini_spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1+glm::vec3(0.0,0.0,3.0), Light::base_forward), 2);
+    mini_spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1+glm::vec3(-2.0,0.0,3.0), Light::base_forward), 3);
+    mini_spot_light->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-36,8,39), cible1+glm::vec3(-2.0,0.0,0.0), Light::base_forward), 4);
+    viewer.addSpotLight(mini_spot_light);
 
-        auto mini_spot_light2 = std::make_shared<SpotLight>(glm::vec3(-44,8,39), cible2, glm::vec3(1.0), glm::vec3(16.0), glm::vec3(6.0), 1, 0.4, 0.4, mini_s_innerCutOff, mini_s_outerCutOff);
+    auto mini_spot_light2 = std::make_shared<SpotLight>(glm::vec3(-44,8,39), cible2, glm::vec3(1.0), glm::vec3(16.0), glm::vec3(6.0), 1, 0.4, 0.4, mini_s_innerCutOff, mini_s_outerCutOff);
 
-        mini_spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2+glm::vec3(0.0,0.0,0.0), Light::base_forward), 0);
-        mini_spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2+glm::vec3(2.0,0.0,0.0), Light::base_forward), 1);
-        mini_spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2+glm::vec3(2.0,0.0,-2.0), Light::base_forward), 2);
-        mini_spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2+glm::vec3(0.0,0.0,-2.0), Light::base_forward), 3);
-        mini_spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2+glm::vec3(0.0,0.0,0.0), Light::base_forward), 4);
-       viewer.addSpotLight(mini_spot_light2);
+    mini_spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2+glm::vec3(0.0,0.0,0.0), Light::base_forward), 0);
+    mini_spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2+glm::vec3(2.0,0.0,0.0), Light::base_forward), 1);
+    mini_spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2+glm::vec3(2.0,0.0,-2.0), Light::base_forward), 2);
+    mini_spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2+glm::vec3(0.0,0.0,-2.0), Light::base_forward), 3);
+    mini_spot_light2->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-44,8,42), cible2+glm::vec3(0.0,0.0,0.0), Light::base_forward), 4);
+    viewer.addSpotLight(mini_spot_light2);
 
-        glm::vec3 cible3 = glm::vec3(-40.5,4,40);
-        auto mini_spot_light3 = std::make_shared<SpotLight>(glm::vec3(-40,8,40), cible3, glm::vec3(1.0), glm::vec3(18.0), glm::vec3(6.0), 1, 0.4, 0.4, std::cos(glm::radians(6.0f)), std::cos(glm::radians(13.0f)));
+    glm::vec3 cible3 = glm::vec3(-40.5,4,40);
+    auto mini_spot_light3 = std::make_shared<SpotLight>(glm::vec3(-40,8,40), cible3, glm::vec3(1.0), glm::vec3(18.0), glm::vec3(6.0), 1, 0.4, 0.4, std::cos(glm::radians(6.0f)), std::cos(glm::radians(13.0f)));
 
-        mini_spot_light3->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-40,8,40), cible3+glm::vec3(0.0,0.0,0.0), Light::base_forward), 0);
-        mini_spot_light3->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-40,8,39), cible3+glm::vec3(0.0,0.0,-2.0), Light::base_forward), 1);
-        mini_spot_light3->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-40,8,40), cible3+glm::vec3(0.0,0.0,0.0), Light::base_forward), 2);
-        mini_spot_light3->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-40,8,42), cible3+glm::vec3(0.0,0.0,3.0), Light::base_forward), 3);
-        mini_spot_light3->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-40,8,40), cible3+glm::vec3(0.0,0.0,0.0), Light::base_forward), 4);
-        viewer.addSpotLight(mini_spot_light3);
+    mini_spot_light3->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-40,8,40), cible3+glm::vec3(0.0,0.0,0.0), Light::base_forward), 0);
+    mini_spot_light3->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-40,8,39), cible3+glm::vec3(0.0,0.0,-2.0), Light::base_forward), 1);
+    mini_spot_light3->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-40,8,40), cible3+glm::vec3(0.0,0.0,0.0), Light::base_forward), 2);
+    mini_spot_light3->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-40,8,42), cible3+glm::vec3(0.0,0.0,3.0), Light::base_forward), 3);
+    mini_spot_light3->addGlobalTransformKeyframe(lookAtModel(glm::vec3(-40,8,40), cible3+glm::vec3(0.0,0.0,0.0), Light::base_forward), 4);
+    viewer.addSpotLight(mini_spot_light3);
 
-        viewer.startAnimation();
-        // Caméra positionnée à une hauteur de 10 (1er paramètre) et fixant une target à hauteur 10 également (2ème paramètre)
-        viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(-52, 12, 50), glm::vec3(5, -15, 0), glm::vec3( 1, 1, 0 ) ) );
+    viewer.startAnimation();
+    // Caméra positionnée à une hauteur de 10 (1er paramètre) et fixant une target à hauteur 10 également (2ème paramètre)
+    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(-52, 12, 50), glm::vec3(5, -15, 0), glm::vec3( 1, 1, 0 ) ) );
 }
 
 void createWater(Viewer& viewer){ // Skybox du décor panoramique
@@ -116,8 +109,8 @@ void createTreasure(Viewer& viewer){
     treasure->updateTextureOption(0); // 0 pour mettre à GL_CLAMP_TO_EDGE au lieu de MIRROR_REPEAT
     treasure->setGlobalTransform(getTranslationMatrix(-40,5,40)*getRotationMatrix(M_PI/85,0,0,1.0)*getScaleMatrix(0.05));
     viewer.addRenderable(treasure);
-    // Lingots d'or illuminés
 
+    // Lingots d'or illuminés
     ShaderProgramPtr phongShader = std::make_shared<ShaderProgram>( "../../sfmlGraphicsPipeline/shaders/phongVertex.glsl",
                                                                      "../../sfmlGraphicsPipeline/shaders/phongFragment.glsl");
     viewer.addShaderProgram( phongShader );

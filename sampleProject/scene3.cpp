@@ -1,17 +1,20 @@
-
 #include <Viewer.hpp>
 #include <ShaderProgram.hpp>
 #include <MeshRenderable.hpp>
-#include <texturing/FlagRenderable.hpp>
+
 #include <dynamics/ConstantForceField.hpp>
 #include <dynamics/DynamicSystemRenderable.hpp>
 #include <dynamics/EulerExplicitSolver.hpp>
 #include <dynamics/DampingForceField.hpp>
+
 #include <texturing/TexturedPlaneRenderable.hpp>
 #include <texturing/MipMapCubeRenderable.hpp>
 #include <texturing/CubeMapRenderable.hpp>
+#include <texturing/FlagRenderable.hpp>
+
 #include <lighting/LightedMeshRenderable.hpp>
 #include <lighting/PointLightRenderable.hpp>
+
 #include <SFML/System/Clock.hpp>
 
 //EPAVE//
@@ -27,7 +30,6 @@ void initialize_scene( Viewer& viewer,DynamicSystemPtr system )
 {
 
     //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
-   // DynamicSystemPtr system = std::make_shared<DynamicSystem>();
     EulerExplicitSolverPtr solver = std::make_shared<EulerExplicitSolver>();
     system->setSolver(solver);
     system->setDt(0.001);
@@ -36,14 +38,14 @@ void initialize_scene( Viewer& viewer,DynamicSystemPtr system )
     DynamicSystemRenderablePtr systemRenderable = std::make_shared<DynamicSystemRenderable>(system);
     viewer.addRenderable(systemRenderable);
 
-
+    //Creation de l'epave
     createEpave(viewer,system,systemRenderable);
     createSardine(viewer, "../../sfmlGraphicsPipeline/meshes/sardine.obj",getTranslationMatrix(-10,5,10),getTranslationMatrix(-10,5,-50));
     viewer.startAnimation();
     system->setDt(5e-4);
 
 
-     // Lumière directionnelle illuminer tous les lingots
+    //Lumière directionnelle illuminer tous les lingots
     ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(  "../../sfmlGraphicsPipeline/shaders/flatVertex.glsl",
                                                                         "../../sfmlGraphicsPipeline/shaders/flatFragment.glsl");
     viewer.addShaderProgram( flatShader );
@@ -89,35 +91,35 @@ void movingCamera(Viewer& viewer, float time)
     glm::vec3 lookAtPoint(-0.8,2.5,2); // Point autour duquel faire tourner la caméra
     float rotationSpeed = glm::radians(360.0f / 3.0f);
     
-     if (time < 5.0f) {
-    // tourner la caméra autour du point (0,0,0)
-    angle += rotationSpeed * time*10e-5;
+    if (time < 5.0f) {
+        // tourner la caméra autour du point (0,0,0)
+        angle += rotationSpeed * time*10e-5;
 
-    if (angle >= glm::radians(360.0f)) {
-        // Arrêt de la rotation après un tour complet (360 degrés)
-        angle = glm::radians(360.0f);
+        if (angle >= glm::radians(360.0f)) {
+            // Arrêt de la rotation après un tour complet (360 degrés)
+            angle = glm::radians(360.0f);
+        }
+
+        glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0, 1, 0));
+        cameraPosition = glm::vec3(rotationMatrix * glm::vec4(cameraPosition - lookAtPoint, 1.0)) + lookAtPoint;
+
+        // Accélération vers le point (0, 5, 5)
+        glm::vec3 targetPosition(0, 5, 5);
+        float acceleration = 1.0f; // Vous pouvez ajuster cette valeur pour contrôler l'accélération
+
+        // Calcul de la direction et de la distance à la cible
+        glm::vec3 direction = glm::normalize(targetPosition - cameraPosition);
+        float distance = glm::length(targetPosition - cameraPosition);
+
+        // Calcul de la vitesse en fonction de l'accélération
+        float speed = sqrt(2 * acceleration * distance);
+
+        // Mettre à jour la position de la caméra en fonction de la vitesse
+        cameraPosition += direction * speed * time;
+
+        viewer.getCamera().setViewMatrix(glm::lookAt(cameraPosition, lookAtPoint, glm::vec3(0, 1, 0)));
+
     }
-
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0, 1, 0));
-    cameraPosition = glm::vec3(rotationMatrix * glm::vec4(cameraPosition - lookAtPoint, 1.0)) + lookAtPoint;
-
-  // Accélération vers le point (0, 5, 5)
-    glm::vec3 targetPosition(0, 5, 5);
-    float acceleration = 1.0f; // Vous pouvez ajuster cette valeur pour contrôler l'accélération
-
-    // Calcul de la direction et de la distance à la cible
-    glm::vec3 direction = glm::normalize(targetPosition - cameraPosition);
-    float distance = glm::length(targetPosition - cameraPosition);
-
-    // Calcul de la vitesse en fonction de l'accélération
-    float speed = sqrt(2 * acceleration * distance);
-
-    // Mettre à jour la position de la caméra en fonction de la vitesse
-    cameraPosition += direction * speed * time;
-
-    viewer.getCamera().setViewMatrix(glm::lookAt(cameraPosition, lookAtPoint, glm::vec3(0, 1, 0)));
-
-     }
     else
     {
         // Transition de la caméra vers le nouveau point de vue
@@ -139,14 +141,7 @@ void movingCamera(Viewer& viewer, float time)
             viewer.getCamera().setViewMatrix(glm::lookAt(cameraPosition, lookAtPoint, glm::vec3(0, 1, 0)));
         }
     }
-    
-
 }
-
-
-
-
-
 
 
 void createSardine(Viewer& viewer, const std::string sardine_path,glm::mat4 positionInit,glm::mat4 positionEnd){
@@ -156,7 +151,7 @@ void createSardine(Viewer& viewer, const std::string sardine_path,glm::mat4 posi
         "../../sfmlGraphicsPipeline/shaders/fishVertex.glsl",
         "../../sfmlGraphicsPipeline/shaders/fishFragment.glsl");
 
-  // Add the shader program to the viewer
+    // Add the shader program to the viewer
     viewer.addShaderProgram( fishShader );
     std::vector<MeshRenderablePtr> tableauDeSardines;
 
@@ -252,7 +247,7 @@ void createSardine(Viewer& viewer, const std::string sardine_path,glm::mat4 posi
     sardine1->addGlobalTransformKeyframe((positionInit+positionEnd)*getScaleMatrix(0.005), 50);
     
 
-     for(int i =0; i<28;i=i+2){
+    for(int i =0; i<28;i=i+2){
         tableauDeSardines[i]->addLocalTransformKeyframe(getRotationMatrix(0, 0,0,1), 0);
         for(float t = 0.5;t<=30;t++){
             tableauDeSardines[i]->addLocalTransformKeyframe(getRotationMatrix(M_PI/10,0,1,0), t);
@@ -267,7 +262,6 @@ void createSardine(Viewer& viewer, const std::string sardine_path,glm::mat4 posi
             }
     }
     
-
     for(int i =0; i<28;i++){
         HierarchicalRenderable::addChild(sardine1 , tableauDeSardines[i+1]);
     }
@@ -291,14 +285,15 @@ void createTreasure(Viewer& viewer){
     ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(   "../../sfmlGraphicsPipeline/shaders/simpleTextureVertex.glsl",
                                                                        "../../sfmlGraphicsPipeline/shaders/simpleTextureFragment.glsl");
     viewer.addShaderProgram( texShader );
+
     std::string treasure_mesh = "./../../sfmlGraphicsPipeline/meshes/chest.obj";
     std::string treasure_text = "./../../sfmlGraphicsPipeline/textures/chest.jpg";
     auto treasure = std::make_shared<TexturedMeshRenderable>(texShader, treasure_mesh, treasure_text);
     treasure->updateTextureOption(0); // 0 pour mettre à GL_CLAMP_TO_EDGE au lieu de MIRROR_REPEAT
     treasure->setGlobalTransform(getTranslationMatrix(-0.8,2.5,2)*getRotationMatrix(M_PI/85,0,0,1.0)*getScaleMatrix(0.005)*getRotationMatrix(M_PI/8,0,0,1.0)*getRotationMatrix(M_PI/3,0,1.0,0));
     viewer.addRenderable(treasure);
-    // Lingots d'or illuminés
 
+    // Lingots d'or illuminés
     ShaderProgramPtr phongShader = std::make_shared<ShaderProgram>( "../../sfmlGraphicsPipeline/shaders/phongVertex.glsl",
                                                                      "../../sfmlGraphicsPipeline/shaders/phongFragment.glsl");
     viewer.addShaderProgram( phongShader );
@@ -306,7 +301,6 @@ void createTreasure(Viewer& viewer){
     std::string lingot_mesh = "./../../sfmlGraphicsPipeline/meshes/lingo.obj";
     MaterialPtr gold = Material::Gold();
     LightedMeshRenderablePtr lingots1 = std::make_shared<LightedMeshRenderable>(phongShader, lingot_mesh, gold);
-    //lingots1->setGlobalTransform(getTranslationMatrix(-41,3.2,38.8)*getRotationMatrix(M_PI/85,0,0,1.0)*getRotationMatrix(M_PI/2,0,1.0,0.0)*getScaleMatrix(0.37,0.85,0.9));
     lingots1->setGlobalTransform(getTranslationMatrix(-0.8,2.4,1.8)*getRotationMatrix(M_PI/8,0,0,1.0)*getRotationMatrix(M_PI/6.5,0,-1,0)*getScaleMatrix(0.036,0.084,0.08));
     viewer.addRenderable(lingots1);
     LightedMeshRenderablePtr lingots2 = std::make_shared<LightedMeshRenderable>(phongShader, lingot_mesh, gold);
@@ -332,16 +326,15 @@ void createEpave(Viewer& viewer, DynamicSystemPtr& system, DynamicSystemRenderab
     viewer.addShaderProgram( flatShader );
     viewer.addShaderProgram( instancedShader );
 
+    //Création du drapeau
     std::string texture_path = "../../sfmlGraphicsPipeline/textures/drapeau_epave.png";
-    FlagRenderablePtr flag = std::make_shared<FlagRenderable>(texShader,
-    0.39f, 0.39, 15, 10, 100e03, 10, texture_path);
+    FlagRenderablePtr flag = std::make_shared<FlagRenderable>(texShader,0.39f, 0.39, 15, 10, 100e03, 10, texture_path);
 
 
     for (const ParticlePtr & particle : flag->getParticles())
         system->addParticle(particle);
     for (const ForceFieldPtr & force_field : flag->getSprings())
         system->addForceField(force_field);
-
 
     ConstantForceFieldPtr courantForceField = std::make_shared<ConstantForceField>(system->getParticles(), DynamicSystem::courant);
     system->addForceField( courantForceField );
@@ -353,7 +346,8 @@ void createEpave(Viewer& viewer, DynamicSystemPtr& system, DynamicSystemRenderab
 
 
     HierarchicalRenderable::addChild(ship,flag);
-     //Initialize a force field that apply to all the particles of the system to simulate vicosity (air friction)
+
+    //Initialize a force field that apply to all the particles of the system to simulate vicosity (air friction)
     float dampingCoefficient = 1.0;
     DampingForceFieldPtr dampingForceField = std::make_shared<DampingForceField>(system->getParticles(), dampingCoefficient);
     system->addForceField(dampingForceField);
