@@ -42,7 +42,7 @@ Il regroupe ainsi nos quatres scènes enchainées correctement et les crédits f
 - C++
 - glm
 - SFML
-- + logiciels externes d'édition d'images, de modélisation 3D, de dessin et de montage vidéo
+- et logiciels externes d'édition d'images, de modélisation 3D, de dessin et de montage vidéo
 
 
 ### Intervenants
